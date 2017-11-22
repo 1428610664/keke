@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;background:#000;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+#box{width:200px;height:200px;background:red;position:fixed;border-radius:50%;}
+
+</style>
+</head>
+<body>
+
+	<div id="box"></div>
+
+<script type="text/javascript">
+var KeCommon = {
+	getXY : function(e){
+		var ev = e || window.event;
+		var x=0,y=0;
+		if(ev.pageX){
+			x = ev.pageX;
+			y = ev.pageY;
+		}else{
+			//拿到scrollTop 和scrollLeft
+			var sleft = 0,stop = 0;
+			//ie678---
+			if(document.documentElement){
+				stop =document.documentElement.scrollTop;
+				sleft = document.documentElement.scrollLeft;
+			}else{
+			//ie9+ 谷歌 
+				stop = document.body.scrollTop;
+				sleft = document.body.scrollLeft;
+			}
+			x = ev.clientX + sleft;
+			y = ev.clientY + stop;
+		}
+		return {x:x,y:y};
+	},
+	drag:function(dragDom){
+		var prevX = 0;
+		var prevY = 0;
+		var iSpeedX = 0;
+		var iSpeedY = 0;
+		var timer = null,_this = this;
+		dragDom.addEventListener("mousedown",function(e){
+			var pos = _this.getXY(e);
+			var x =pos.x - dragDom.offsetLeft;
+			var y =pos.y - dragDom.offsetTop;
+			prevX =pos.x;
+			prevY =pos.y;
+			document.onmousemove = function(e){
+				var p = _this.getXY(e);
+				dragDom.style.left = p.x - x + 'px';
+				dragDom.style.top = p.y - y + 'px';
+				
+				iSpeedX = p.x - prevX;
+				iSpeedY = p.y - prevY;
+				
+				prevX = p.x;
+				prevY = p.y;
+			};
+			document.onmouseup = function(){
+				document.onmousemove = null;
+				document.onmouseup = null;
+				startMove();
+			};
+			return false;
+		});
+		
+		function startMove(){
+			clearInterval(timer);
+			timer = setInterval(function(){
+				iSpeedY += 3;
+				var L = dragDom.offsetLeft + iSpeedX;
+				var T = dragDom.offsetTop + iSpeedY;
+				if(T>document.documentElement.clientHeight - dragDom.offsetHeight){
+					T = document.documentElement.clientHeight - dragDom.offsetHeight;
+					iSpeedY *= -1;
+					iSpeedY *= 0.75;
+					iSpeedX *= 0.75;
+				}else if(T<0){
+					T = 0;
+					iSpeedY *= -1;
+					iSpeedY *= 0.75;
+				}
+				
+				if(L>document.documentElement.clientWidth - dragDom.offsetWidth){
+					L = document.documentElement.clientWidth - dragDom.offsetWidth;
+					iSpeedX *= -1;
+					iSpeedX *= 0.75;
+				}else if(L<0){
+					L = 0;
+					iSpeedX *= -1;
+					iSpeedX *= 0.75;
+				}
+				
+				dragDom.style.left = L + 'px';
+				dragDom.style.top = T + 'px';
+				if(Math.abs(Math.floor(iSpeedY))==2 && Math.abs(Math.floor(iSpeedX))==0 )clearInterval(timer);
+			},30);
+		}
+	}
+};
+
+	window.onload = function(){
+		var boxDom = document.getElementById("box");
+		KeCommon.drag(boxDom);
+	};
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;padding-top:100px;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar{width:8px;}
+::-moz-scrollbar{width:8px;}
+::-o-scrollbar{width:8px;}
+::-ms-scrollbar{width:8px;}
+::scrollbar{width:8px;}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb{background-color:#0c9;}
+::-moz-scrollbar-thumb{background-color:#0c9;}
+::-o-scrollbar-thumb{background-color:#0c9;}
+::-ms-scrollbar-thumb{background-color:#0c9;}
+::scrollbar-thumb{background-color:#0c9;}
+
+h3{width:1122px;margin:0 auto;font-size:16px;}
+#cont{width:1122px;margin:0 auto;}
+#cont .btn{color:#FFF;border:none;width:120px;height:35px;}
+#cont label:nth-child(1) .btn{background:#81a7c0;}
+#cont label:nth-child(2) .btn{background:#0c9;}
+textarea{width:1110px;height:160px;margin:10px auto;display:block;border:1px solid #ddd;padding:6px;}
+label{cursor: pointer;margin-right:6px;}
+</style>
+</head>
+  
+<body style="padding-top:16px;background:url('bg.png');">
+	<h3>DOM节点拼接和单双引号互换</h3>
+    <textarea id="tm-source">
+function tm_transfter(){
+	var source = $.trim($("#tm-source").val().replace(/(\n)*$/,""));
+	var checkVal = $("input[type='radio']:checked").val();
+	var result = "$('#xxxx').append(";
+	if(checkVal==2){
+		$("#tm-target").val(source.replace(/"/g,"'"));
+		var arr = $("#tm-target").val().match(/^(.*\n*)$/igm);
+		for(var i=0;i<arr.length;i++){
+			result += '"'+arr[i]+'"+\n';
+		}
+		$("#tm-result").val(result.substring(0,result.length-2)+");");
+	}
+	if(checkVal==1){
+		$("#tm-target").val(source.replace(/'/g,'\"'));
+		$("#tm-target").val(source.replace(/"/g,"\\\""));
+		var arr = $("#tm-target").val().match(/^(.*\n*)$/igm);
+		for(var i=0;i<arr.length;i++){
+			result+='"'+arr[i].replace(/\s*/,'')+'"'+"+"+'\n';
+		}
+		$("#tm-result").val(result.substring(0,result.length-2)+");");
+	}
+}
+	</textarea>
+
+	<div id="cont">
+		<label><input type="button" class="btn" onclick="tm_transfter(2)" value="双转单"></label>
+		<label><input type="button" class="btn" onclick="tm_transfter(1)" value="单转双"></label>
+	</div>
+		
+    <textarea id="tm-target"></textarea>
+    <textarea id="tm-result"></textarea>
+
+	<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script> 
+    <script type="text/javascript">
+    	function tm_transfter(checkVal){
+    		var source = $.trim($("#tm-source").val().replace(/(\n)*$/,""));
+	    	var result = "$('#xxxx').append(";
+    		if(checkVal==2){
+    			$("#tm-target").val(source.replace(/"/g,"'"));
+    			var arr = $("#tm-target").val().match(/^(.*\n*)$/igm);
+	    		for(var i=0;i<arr.length;i++){
+	    			result += '"'+arr[i]+'"+\n';
+	    		}
+	    		$("#tm-result").val(result.substring(0,result.length-2)+");");
+    		}
+    		if(checkVal==1){
+    			$("#tm-target").val(source.replace(/'/g,'\"'));
+    			$("#tm-target").val(source.replace(/"/g,"\\\""));
+	    		var arr = $("#tm-target").val().match(/^(.*\n*)$/igm);
+	    		for(var i=0;i<arr.length;i++){
+	    			result+='"'+arr[i].replace(/\s*/,'')+'"'+"+"+'\n';
+	    		}
+	    		$("#tm-result").val(result.substring(0,result.length-2)+");");
+    		}
+    	}
+    </script>
+  </body>
+</html>

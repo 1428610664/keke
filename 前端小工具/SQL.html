@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;padding-top:100px;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;background:translate;}
+.clear:after{content:"";display:block;clear:both;}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar{width:8px;}
+::-moz-scrollbar{width:8px;}
+::-o-scrollbar{width:8px;}
+::-ms-scrollbar{width:8px;}
+::scrollbar{width:8px;}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb{background-color:#0c9;}
+::-moz-scrollbar-thumb{background-color:#0c9;}
+::-o-scrollbar-thumb{background-color:#0c9;}
+::-ms-scrollbar-thumb{background-color:#0c9;}
+::scrollbar-thumb{background-color:#0c9;}
+
+h3{width:1122px;margin:0 auto;font-size:16px;}
+textarea{width:1110px;height:340px;margin:10px auto;display:block;border:1px solid #ddd;padding:6px;}
+label{cursor:pointer;}
+.tmr{height:180px;}
+.row{width:1122px;margin:0 auto;}
+.row #tablename{border:1px solid #ddd;}
+.button.primary{color:#FFF;background:#0c9;border:none;width:120px;height:35px;}
+</style>
+</head>
+  
+<body style="padding-top:16px;background:url('bg.png');">
+	<h3>SQL自动生成工具(Mybatis和Hibernate)</h3>
+    <textarea id="tm-source">username,
+account,
+password,
+is_delete,
+age,
+male</textarea>
+	<div class="row">
+	    <input type="text" id="tablename" value="user" style="padding-left:6px;height:42px;" title="表名"/>
+	    <label><input type="button" class="button primary small" onclick="transfter()" value="开始转换"></label>
+	</div>
+    <textarea id="tm-result1" class="tmr"></textarea>
+    <textarea id="tm-result2" class="tmr"></textarea>
+    <textarea id="tm-result3" class="tmr"></textarea>
+    <textarea id="tm-result4" class="tmr"></textarea>
+
+	<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script> 
+    <script type="text/javascript">
+    	function transfter(){
+    		var source = $.trim($("#tm-source").val().replace(/(\s)*/ig,""));
+    		if(source!=""){
+	    		var tableName = $("#tablename").val();
+    			var arr = source.split(",");
+    			var narr = [];
+    			var narr2 = [];
+    			var narr3 = [];
+    			var narr4 = [];
+    			var narr5 = [];
+    			
+    			for(var i=0;i<arr.length;i++){
+    				narr.push("?");
+    				narr5.push(columnToProperty2(arr[i]));
+    				narr2.push(" #\{"+columnToProperty2(arr[i])+"\}");
+    				narr3.push( arr[i]+" =? ");
+    				narr4.push(arr[i]+" = #\{"+columnToProperty2(arr[i])+"\} ");
+    			}
+    			
+    			$("#tm-result1").val("INSERT INTO "+tableName+" ("+source+") VALUES ("+narr.toString()+")\nINSERT INTO "+tableName+" ("+source+") VALUES ("+narr2.toString()+")");
+    			$("#tm-result2").val("UPDATE "+tableName+" SET "+narr3.toString()+" WHERE ID = ?\nUPDATE "+tableName+"  SET "+narr4.toString()+"  WHERE  ID = #\{id\}");
+    			$("#tm-result3").val("SELECT "+narr5.toString()+" "+tableName+"\nWHERE ID = ?\nORDER BY CREATE_TIME DESC\n\nSELECT "+source+" "+tableName+"\nWHERE ID = #\{id\}\nORDER BY CREATE_TIME DESC");
+    			$("#tm-result4").val("DELETE FROM "+tableName+" WHERE id = ?\nDELETE FROM "+tableName+" WHERE id = #\{id\}");
+    		}
+    	}
+    	
+    	
+    	function columnToProperty2(column) {
+    		
+            var result = [];
+            // 快速检查
+            if(column == null || column==""){
+                // 没必要转换
+                return "";
+            }
+            if(column.indexOf("_")==-1){
+                // 不含下划线，仅将首字母小写
+                return column.substring(0, 1).toLowerCase() + column.substring(1);
+            }else{
+                // 用下划线将原始字符串分割
+                var columns = column.split("_");
+                for(var i=0;i<columns.length;i++){
+                	var columnSplit =columns[i]; 
+                    // 跳过原始字符串中开头、结尾的下换线或双重下划线
+                    if(columnSplit==""){
+                        continue;
+                    }
+                    // 处理真正的驼峰片段
+                    if(result.length == 0){
+                        // 第一个驼峰片段，全部字母都小写
+                        result.push(columnSplit.toLowerCase());
+                    }else{
+                        // 其他的驼峰片段，首字母大写
+                        result.push(columnSplit.substring(0, 1).toUpperCase());
+                        result.push(columnSplit.substring(1).toLowerCase());
+                    }
+                }
+                return result.join("");
+            }
+        }
+    </script>
+</body>
+</html>

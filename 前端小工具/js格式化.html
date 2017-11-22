@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;padding-top:100px;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea,button{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar{width:8px;}
+::-moz-scrollbar{width:8px;}
+::-o-scrollbar{width:8px;}
+::-ms-scrollbar{width:8px;}
+::scrollbar{width:8px;}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb{background-color:#0c9;}
+::-moz-scrollbar-thumb{background-color:#0c9;}
+::-o-scrollbar-thumb{background-color:#0c9;}
+::-ms-scrollbar-thumb{background-color:#0c9;}
+::scrollbar-thumb{background-color:#0c9;}
+
+h3{width:1122px;margin:0 auto;font-size:16px;}
+button{float:left;color:#FFF;background:#0c9;margin-right:6px;border:none;width:120px;height:35px;}
+textarea{width:1110px;height:360px;margin:10px auto;display:block;border:1px solid #ddd;padding:6px;}
+.row{width:1122px;margin:0 auto;}
+.button.primary{color:#FFF;background:#81a7c0;}
+.button.primary1{color:#FFF;background:#0c9;}
+	</style>
+  </head>
+  
+  <body style="padding-top:16px;background:url('bg.png');">
+
+	<h3>JS压缩工具</h3>
+    <textarea id="js_input">
+function js_compress(a){
+	reset_result();
+	var c=$("#js_input").val();
+	if(check_input()){
+		var b=new Packer;
+		var v=b.pack(c,false,a);
+		var d=c.length;
+		if(!/\r/.test(c)){d+=match(c,/\n/g).length}
+		$("#js_output").val(v);
+		$('#output_rate').text("原来大小: "+d+"B, 压缩后大小: "+v.length+"B, 压缩率为:"+(Math.round(v.length/d*1000)/10)+"%");
+	}
+}
+    </textarea>
+  <div class="row clear">
+		<button class="button primary small" onclick="javascript:js_compress(false);">JS简单压缩</button>
+		<button class="button primary1 small" onclick="javascript:js_compress(true);">JS高级压缩</button>
+		<button class="button primary small" onclick="javascript:js_format();">JS格式化</button>
+		<button class="button primary1 small" onclick="javascript:js_encode();">JS混淆</button>
+		<button class="button primary small" onclick="javascript:js_decode();">JS解混淆</button>
+	</div>
+    <textarea id="js_output"></textarea>
+
+	<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script> 
+	<script type="text/javascript" src="js/my.js"></script>
+	<script type="text/javascript" src="js/Words.js"></script>
+	<script type="text/javascript" src="js/beautify.js"></script>
+	<script type="text/javascript" src="js/Packer.js"></script>
+    <script type="text/javascript">
+
+	function reset_result(){
+		$('#js_output').val('');
+		$('#output_rate').text('');
+	}
+	function check_input(){
+		var c=$("#js_input").val();
+		if(c.length<=0||c==="请输入Javascript代码"){
+			$("#js_input").val("请输入Javascript代码");
+			return false;
+		}
+		return true;
+	}
+	function js_format(){
+		reset_result();
+		if(check_input()){
+			$('#js_output').val(js_beautify($('#js_input').val(),{"indent_with_tabs":true}));
+		}
+	}
+	function js_compress(a){
+		reset_result();
+		var c=$("#js_input").val();
+		if(check_input()){
+			var b=new Packer;
+			var v=b.pack(c,false,a);
+			var d=c.length;
+			if(!/\r/.test(c)){d+=match(c,/\n/g).length}
+			$("#js_output").val(v);
+			$('#output_rate').text("原来大小: "+d+"B, 压缩后大小: "+v.length+"B, 压缩率为:"+(Math.round(v.length/d*1000)/10)+"%");
+		}
+	}
+	function js_encode(){
+		reset_result();
+		var packer=new Packer;
+		var c=$("#js_input").val();
+		if(check_input()){
+			var v=packer.pack(c,true,true);
+			$("#js_output").val(v);
+		}
+	}
+	function js_decode(){
+		reset_result();
+		var c = $("#js_input").val();
+		if(check_input()){
+			var r=eval(c.slice(4));r=r.replace(/^\s+/,'');
+			if(r&&r.charAt(0)==='<'){
+				r=style_html(r,4,' ',80);
+			}else{
+				r=js_beautify(r,4,' ');
+			}
+			$("#js_output").val(r);
+		}
+	}
+	</script>	
+  </body>
+</html>

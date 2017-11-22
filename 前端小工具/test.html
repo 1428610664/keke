@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+
+
+</style>
+</head>
+<body>
+
+	
+	
+	
+
+
+
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+		var url = "http://api.map.baidu.com/highacciploc/v1?qcip=120.24.48.24&extensions=3&qterm=pc&ak=y4y2Zl2zShC3So9t56FM8gmS3HwqlIBd=bd09ll";
+		$.ajax({
+			url:url,
+			type:"post",
+			success:function(data){
+				alert(JSON.stringify(data));
+				console.log(JSON.stringify(data));
+			}
+		});
+	});
+
+
+/*
+	百度地图二次封装
+		BDmap.ipLocation(qcip,extensions,qterm)		ip定位
+		BDmap.search(query,lct,radius)	搜索
+		BDmap.Geocoding({status:0||1,city:,address:,lct:})	逆向检索
+		BDmap.direction({origin:,destination:,mode:,region:,origin_region:,destination_region})	导航	
+*/
+(function(win){
+	win.BDmap = {
+		/*
+			密钥
+		*/
+		ak : "y4y2Zl2zShC3So9t56FM8gmS3HwqlIBd",
+		/*
+			ip定位
+				qcip:待定位IP (可为空)
+				extensions:
+					0（默认）：只返回基础定位结果
+					1：返回基础定位结果+地址信息
+					2：返回基础定位结果+周边POI信息
+					3：返回基础定位结果+地址信息+POI信息
+				qterm:mb(手机)||pc(电脑)
+		*/
+		ipLocation : function(qcip,extensions,qterm){
+			$.ajax({
+				url:"http://api.map.baidu.com/highacciploc/v1?"+(qcip?'qcip='+qcip:'')+"&extensions="+extensions+"&qterm="+qterm+"&ak="+this.ak+"&coord=bd09ll",
+				type:"post",
+				success:function(data){
+					return data;
+				}
+			});
+		},
+		/*
+			搜索
+				query:搜索关键字
+				lct:坐标(lat<纬度>,lng<经度>)
+				radius:搜索半径(单位为米)
+		*/
+		search : function(query,lct,radius){
+			$.ajax(
+				url:"http://api.map.baidu.com/place/v2/search?query="+query+"&page_size=10&page_num=0&scope=1&location="+lct+"&radius="+radius+"&output=json&ak={"+this.ak+"}&filter=industry_type:life| sort_name:distance|sort_rule:0",
+				type:"post",
+				success:function(data){
+					return data;
+				}
+			);
+		},
+		/*
+			逆向检索
+			opts = json
+				status:0 = 地址转坐标
+				city:所在城市(可为空)
+				address:地址
+
+				status:1 = 坐标转地址
+				lct:坐标
+		*/
+		Geocoding : function(opts){
+			var url0 = "http://api.map.baidu.com/geocoder/v2/?"+(opts.city?"city="+opts.city:"")+"&address="+opts.address+"&output=json&ak="+this.ak;
+			var url1 = "http://api.map.baidu.com/geocoder/v2/?coordtype=bd09ll&output=json&location="+opts.lct+"&pois=0&ak="+this.ak;
+			$.ajax({
+				url:opts.status==0?url0:url1,
+				type:"post",
+				success:function(data){
+					return data;
+				}
+			});
+		},
+		/*
+			导航
+			opts = {
+				origin:起点名(地名或坐标'40.056878,116.30815'),
+				destination:终点名(地名或坐标'40.056878,116.30815'),
+				mode:导航模式(driving（驾车）、walking（步行）、transit（公交）、riding（骑行）新增)
+
+				region:公交、步行导航必填(地区名)
+				origin_region:起始点所在城市，驾车导航时必填,
+				destination_region:终点所在城市，驾车导航时必填,
+			}
+		*/
+		direction : function(opts){
+			var t1="",t2="",t3="";
+			if(opts.mode == "transit" || opts.mode == "walking"){
+				t1 = "&"+opts.region;
+			}else if(opts.mode == "driving"){
+				t2 = "&"+opts.origin_region;
+				t3 = "&"+opts.destination_region;
+			}
+			$.ajax({
+				url:"http://api.map.baidu.com/direction/v1?origin="+opts.origin+"&destination="+opts.destination+"&mode="+opts.mode+t1+t2+t3+"&output=json&ak="+this.ak,
+				type:"post",
+				success:function(data){
+					return data;
+				}
+			});
+		},
+		/*
+			计算路线的距离和耗时
+			opts = {
+				type:0=驾车 1=骑行 2=步行,
+				origins:起点坐标(格式：lat<纬度>,lng<经度>|lat<纬度>,lng<经度>),
+				destinations:终点坐标(格式：lat<纬度>,lng<经度>|lat<纬度>,lng<经度>)
+			}
+		*/
+		RouteMatrix : function(opts){
+			var type = "";
+			if(opts.type == 0){//驾车
+				type = "driving";
+			}else if(opts.type == 1){//骑行
+				type = "riding";
+			}else if(opts.type == 2){//步行
+				type = "walking";
+			}
+			$.ajax({
+				url:"http://api.map.baidu.com/routematrix/v2/"+type+"?output=json&tactics=13&ak="+this.ak+"&origins"+opts.origins+"=&destinations="+opts.destinations,
+				type:"post",
+				success:function(data){
+					return data;
+				}
+			});
+		}
+	}
+})(window);
+
+	 
+</script>
+
+
+</body>
+</html>

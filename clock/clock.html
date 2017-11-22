@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+*{word-wrap:break-word;;outline:none; -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;background:#000;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+#clockbox{padding:0;text-align:center;}
+#clockbox:after{content:"";display:block;position:absolute;top:0;left:0;z-index:2;right:0;bottom:0;}
+#clockbox p{position:absolute;top:112px;left:68px;z-index:2}
+#clockbox .clock{border-radius:50%;}
+#clockbox .hclock{position:relative;display:inline-block;}
+#clockbox .hms{position:absolute;display:block;left:50px;top:50px;transform-origin:center center}
+.ke_clockbox{width: 202px;position:fixed;bottom:10px;z-index:80;right:60px;border:1px solid #EDFFF6;border-radius:50%;height: 202px;box-shadow:0 0 1em #C1B3B3;}
+ #clocktime{position:absolute;top:50%;left:50%;z-index:2;width:100%;height:100%;margin-top:-35px;margin-left:-32px;color:#999}
+
+</style>
+</head>
+<body>
+
+
+<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+	
+		window.onload = function(){
+			clock.clock();
+			var boxDom = document.getElementById("ke_clockbox");
+			KeCommon.drag(boxDom);
+		};
+
+
+var KeCommon = {
+	//获取XY轴
+	getXY : function(e){
+		var ev = e || window.event;
+		var x=0,y=0;
+		if(ev.pageX){
+			x = ev.pageX;
+			y = ev.pageY;
+		}else{
+			//拿到scrollTop 和scrollLeft
+			var sleft = 0,stop = 0;
+			//ie678---
+			if(document.documentElement){
+				stop =document.documentElement.scrollTop;
+				sleft = document.documentElement.scrollLeft;
+			}else{
+			//ie9+ 谷歌 
+				stop = document.body.scrollTop;
+				sleft = document.body.scrollLeft;
+			}
+			x = ev.clientX + sleft;
+			y = ev.clientY + stop;
+		}
+		return {x:x,y:y};
+	},
+	//拖拽
+	drag:function(dragDom){
+		var prevX = 0;
+		var prevY = 0;
+		var iSpeedX = 0;
+		var iSpeedY = 0;
+		var timer = null,_this = this;
+		dragDom.addEventListener("mousedown",function(e){
+			var pos = _this.getXY(e);
+			var x =pos.x - dragDom.offsetLeft;
+			var y =pos.y - dragDom.offsetTop;
+			prevX =pos.x;
+			prevY =pos.y;
+			document.onmousemove = function(e){
+				var p = _this.getXY(e);
+				dragDom.style.left = p.x - x + 'px';
+				dragDom.style.top = p.y - y + 'px';
+				
+				iSpeedX = p.x - prevX;
+				iSpeedY = p.y - prevY;
+				
+				prevX = p.x;
+				prevY = p.y;
+			};
+			document.onmouseup = function(){
+				document.onmousemove = null;
+				document.onmouseup = null;
+				startMove();
+			};
+			return false;
+		});
+		
+		function startMove(){
+			clearInterval(timer);
+			timer = setInterval(function(){
+				iSpeedY += 3;
+				var L = dragDom.offsetLeft + iSpeedX;
+				var T = dragDom.offsetTop + iSpeedY;
+				if(T>document.documentElement.clientHeight - dragDom.offsetHeight){
+					T = document.documentElement.clientHeight - dragDom.offsetHeight;
+					iSpeedY *= -1;
+					iSpeedY *= 0.75;
+					iSpeedX *= 0.75;
+				}else if(T<0){
+					T = 0;
+					iSpeedY *= -1;
+					iSpeedY *= 0.75;
+				}
+				
+				if(L>document.documentElement.clientWidth - dragDom.offsetWidth){
+					L = document.documentElement.clientWidth - dragDom.offsetWidth;
+					iSpeedX *= -1;
+					iSpeedX *= 0.75;
+				}else if(L<0){
+					L = 0;
+					iSpeedX *= -1;
+					iSpeedX *= 0.75;
+				}
+				
+				dragDom.style.left = L + 'px';
+				dragDom.style.top = T + 'px';
+				if(Math.abs(Math.floor(iSpeedY))==2 && Math.abs(Math.floor(iSpeedX))==0 )clearInterval(timer);
+			},30);
+		}
+	}
+};
+var clock = {
+	//通过id查找class元素
+	domClass : function(dompid,sClass){
+		var dom = document.getElementById(dompid);
+		var pdom = (typeof dompid==="string"?dom:dompid);
+		var aEle = pdom.getElementsByTagName('*');
+		var arrs = [];
+		for(var i=0;i<aEle.length;i++){
+			if(aEle[i].className.indexOf(sClass)!=-1){
+				arrs.push(aEle[i]);
+			}
+		}
+		return arrs;
+	},
+	//时钟
+	clock:function(callback){
+		$("body").append("<div id='ke_clockbox' class='ke_drag ke_clockbox'><span class='clock_overy'></span>"+
+		"	    <div id='clockbox'>"+
+		"	       	<div class='clock'>"+
+		"				<div class='hclock'>"+
+		"					<span class='hms'><img class='hour' src='images/clock_hour.png'/></span>"+
+		"					<span class='hms'><img class='minute' src='images/clock_min.png'/></span>"+
+		"					<span class='hms'><img class='second' src='images/clock_sec.png'/></span>"+
+		"					<img src='images/clock.png'/>"+
+		"				</div>"+
+		"			</div>"+
+		"	     </div>"+
+		"	</div>"+
+		"</div>");
+		
+		var hourDom = this.domClass("clockbox","hour")[0];
+		var minuteDom = this.domClass("clockbox","minute")[0];
+		var secDom = this.domClass("clockbox","second")[0];
+		function init(){
+			var date = new Date();
+			var sec = date.getSeconds();
+			var min = date.getMinutes();
+			var hour = date.getHours();
+			secDom.style.transform = "rotate("+(sec * 6)+"deg)";
+			minuteDom.style.transform = "rotate("+(min * 6)+"deg)";
+			hourDom.style.transform = "rotate("+(hour * 30)+"deg)";
+			var h = hour <10 ? "0"+hour:hour;
+			var m = min <10 ? "0"+min:min;
+			var s = sec <10 ? "0"+sec:sec;
+			var mk = "AM";
+			if(h>12 && h<18)mk="PM";
+			if(h>=18)mk="NG";
+
+			if(callback)callback.call(date,h,m,s,mk);
+		}
+		init();
+		setInterval(function(){
+			init();
+		},1000);
+		return this;
+	}
+}
+
+
+
+</script>
+
+
+</body>
+</html>

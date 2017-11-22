@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;padding-top:100px;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea,button{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar{width:8px;}
+::-moz-scrollbar{width:8px;}
+::-o-scrollbar{width:8px;}
+::-ms-scrollbar{width:8px;}
+::scrollbar{width:8px;}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb{background-color:#0c9;}
+::-moz-scrollbar-thumb{background-color:#0c9;}
+::-o-scrollbar-thumb{background-color:#0c9;}
+::-ms-scrollbar-thumb{background-color:#0c9;}
+::scrollbar-thumb{background-color:#0c9;}
+
+h3{width:1122px;margin:0 auto;font-size:16px;}
+button{float:left;color:#FFF;background:#0c9;margin-right:6px;border:none;width:120px;height:35px;}
+textarea{width:1110px;height:360px;margin:10px auto;display:block;border:1px solid #ddd;padding:6px;}
+.row{width:1122px;margin:0 auto;}
+.button.primary{color:#FFF;background:#81a7c0;}
+.button.success{color:#FFF;background:#0c9;}
+</style>
+</head>
+
+<body style="padding-top:16px;background:url('bg.png');">
+
+	<h3>CSS格式化工具</h3>
+	<textarea  id="codeText">@charset "UTF-8";@font-face{font-family:'pbfont';src:url('../pbfont/pb.eot');src:url('../pfont/pb.eot?#iefix') format('embedded-opentype'),url('../pbfont/pb.woff') format('woff'),url('../pbfont/pb.ttf')format('truetype'),url('../pbfont/pb.svg#pbfont') format('svg');font-weight:normal;font-style:normal;}
+/*----//ptsans_bold_macroman----*/
+/*---ptsans_regular_macroman---*/
+@font-face{font-family:'prfont';src:url('../prfont/pr.eot');src:url('../prfont/pr.eot?#iefix') format('embedded-opentype'),url('../prfont/pr.woff') format('woff'),url('../prfont/pr.ttf')format('truetype'),url('../prfont/pr.svg#prfont') format('svg');font-weight:normal;font-style:normal;}
+*{word-wrap:break-word;;outline:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
+input,textarea{word-wrap:none;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text;}
+html{-webkit-text-size-adjust:none;overflow-x:hidden}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,span{padding:0;margin:0;}
+body{font:normal 12px/1.5em pbfont,"微软雅黑","冬青黑体简体中文 w3","宋体";padding-top:60px;}
+fieldset,img,html,body,iframe{border:0;}
+/** 重置表格元素 **/
+table{border-collapse:collapse;border-spacing:0;}
+ol,ul{list-style:none;}
+address,caption,cite,code,dfn,em,strong,th,var{font-weight:normal;font-style:normal;}
+caption,th{text-align:left;}
+em,i,small,caption,th{font-weight:normal;font-style:normal;font-size:100%;}
+h1,h2,h3,h4,h5,h6,em{font-weight:normal;}
+q:before,q:after{content:'';}
+.clearfix{*zoom:1;}
+.clearfix:after{content:".";display:block;clear:both;visibility:hidden;line-height:0;height:0;}
+a{color:#54504C;text-decoration:none;}
+img{border:0;vertical-align:middle;max-width:100%}
+a,button{outline:none;border:0;}
+input,select{border:1px solid #ccc;font-family:inherit;}
+button::-moz-focus-inner{border:0;padding:0;margin:0;}
+textarea,input,button,select{outline:0;font-size:inherit;line-height:inherit;color:inherit;font-family:inherit;}
+textarea{overflow:auto;resize:none;font-family:inherit;}
+.hide,.none{display:none}
+.hidden{visibility:hidden;}
+.show,.block{display:block;}
+	</textarea>
+	<div class="row">
+		<button class="button primary small" onclick="$(&#39;codeText&#39;).value=code.A();">压缩代码</button>
+		<button class="button success small" onclick="$(&#39;codeText&#39;).value=code.B();">格式(多行)</button>
+		<button class="button primary small" onclick="$(&#39;codeText&#39;).value=code.C();">格式(单行)</button>
+		<button class="button success small" onclick="$(&#39;codeText&#39;).value=code.Z();">还原代码</button>
+	</div>
+
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+function codeZip(obj){
+	this.S=function(){
+		var code=obj.value;
+		if(!this.codeZ||this.codeZ=="")this.codeZ=code;
+		code=code.replace(/(\n|\t|\s)*/ig,'$1');
+		code=code.replace(/\n|\t|\s(\{|\}|\,|\:|\;)/ig,'$1');
+		code=code.replace(/(\{|\}|\,|\:|\;)\s/ig,'$1');
+		return code;
+	}
+	this.A=function(){
+		var code=this.S();
+		return code;
+	} 
+	this.B=function(){
+		var code=this.S();
+		code=code.replace(/(\{)/ig,' $1');
+		code=code.replace(/(\{|\;)/ig,'$1\n\t');
+		code=code.replace(/\t*(\})/ig,'$1\n');
+		code=code.replace(/(\*\/)/ig,'$1\n');
+		return code;
+	}
+	this.C=function(){
+		var code=this.S();
+		code=code.replace(/(\})/ig,'$1\n');
+		code=code.replace(/(\*\/)/ig,'$1\n');
+		return code;
+	} 
+	this.Z=function(){
+		return (this.codeZ)?this.codeZ:obj.value;
+	}
+	var my=this;
+	obj.onkeydown=function(){
+		my.codeZ="";	
+	}
+}
+var code=new codeZip($('codeText'));
+
+</script>
+
+
+</body>
+</html>

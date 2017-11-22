@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!--<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="screen-orientation" content="portrait">
+<meta name="x5-orientation" content="portrait">-->
+<meta name="Keywords" content="关键字,关键字">
+<meta name="Description" content="描述">
+<title> - 付出不亚于任何人的努力 让优秀成成一种习惯 - </title>
+<style type="text/css">
+body,ul,ol,p,h1,h2,h3,h4,dl,dd,form,input,textarea,select{margin:0px;padding:0px;}
+body{font-size:12px;font-family:"微软雅黑";color:#000;}
+img{border:none;}
+a{text-decoration:none;}
+ul,li{list-style:none;}
+input,select,option,textarea{outline:none;}
+textarea{overflow:auto;resize:none;vertical-align:top;}
+.clear:after{content:"";display:block;clear:both;}
+
+
+
+</style>
+</head>
+<body>
+
+
+
+<script type="text/javascript">
+	window.onload = function(){
+	
+	};
+	function dom(id){
+		return document.getElementById(id);
+	};
+
+
+var mkBanner = {
+	imgArr:[],
+	indexArr:[],
+	index:-1,
+	swidth:118,
+	sheight:70,
+	length:0,
+	bannerTimer:null,
+	load:function(img){
+		var bannerDom = dom("mk_cbannerproxy");
+		var bw = bannerDom.clientWidth;
+		var bh = bannerDom.clientHeight;
+		var cell = bw / mkBanner.swidth;
+		var row = bh / mkBanner.sheight;
+		var url = "url("+img+")";
+		bannerDom.innerHTML = "";
+		for(var i=0;i<row;i++){
+			for(var j=0;j<cell;j++){
+				var spanDom = document.createElement("span");
+				spanDom.style.backgroundImage = url;
+				spanDom.style.backgroundPosition = "-"+(j*(mkBanner.swidth+1))+"px -"+(i*(mkBanner.sheight+1))+"px";
+				spanDom.style.left =(j*(mkBanner.swidth+1))+"px";
+				spanDom.style.top = (i*(mkBanner.sheight+1))+"px";
+				bannerDom.appendChild(spanDom);
+				mkBanner.imgArr.push(spanDom);
+			}
+		}
+	},
+	animation:function(){
+		var len = mkBanner.imgArr.length;
+		for(var i=0;i<len;i++){
+			(function(c){
+				mkBanner.imgArr[c].timer = setTimeout(function(){
+					$(mkBanner.imgArr[c]).addClass("on");
+					clearTimeout(mkBanner.imgArr[c].timer);
+				},i*5)
+			})(i);
+		}
+	},
+	init:function(){
+		mkBanner.length = $("#bannerlist").children().length;
+		if(mkBanner.length>1){
+			var rhtml = "";
+			$("#bannerlist").children().each(function(index){
+				rhtml+="<li data-url='"+$(this).data("url")+"' data-index='"+index+"' class='b_radius "+(index==0?'select':"")+"'></li>";
+			});
+			$("#mk_banner_rbox").html(rhtml);
+		}
+		var $first = $("#bannerlist").children().first().clone();
+		var $last = $("#bannerlist").children().last().clone();
+		
+		$("#mk_banner_rbox").find("li").hover(function(){
+			mkBanner.index = ($(this).index())*-1;
+			clearInterval(mkBanner.bannerTimer);
+			mkBanner.prev(dom("bprev"));
+			$(this).addClass("select").siblings().removeClass("select");
+		},function(){
+			clearInterval(mkBanner.bannerTimer);
+			mkBanner.autoPlay();
+		});
+		
+		$("#bannerlist").prepend($last);
+		$("#bannerlist").append($first);
+		$("#bannerlist").css("marginLeft",-1180);
+		this.autoPlay();
+	},
+	over:function(){
+		if(mkBanner.bannerTimer)clearInterval(mkBanner.bannerTimer);
+	},
+	out:function(){
+		if(mkBanner.bannerTimer)clearInterval(mkBanner.bannerTimer);
+		this.autoPlay();
+	},
+	autoPlay:function(){
+		if(mkBanner.bannerTimer)clearInterval(mkBanner.bannerTimer);
+		mkBanner.bannerTimer = setInterval(function(){
+			mkBanner.prev(dom("bprev"));
+		},8000);
+	},
+	next:function(obj){
+		if(obj.timer)clearTimeout(obj.timer);
+		obj.timer = setTimeout(function(){
+			$("#lcount").val(mkBanner.index);
+			mkBanner.index++;
+			$("#mk_banner_rbox").find("li").eq(Math.abs(mkBanner.index)-1).addClass("select").siblings().removeClass("select");
+			$("#bannerlist").stop(true,true).animate({marginLeft:mkBanner.index*1180},600,function(){
+				if(mkBanner.index==0){
+					$("#bannerlist").css("marginLeft",-mkBanner.length*1180);
+					mkBanner.index = -mkBanner.length;
+					$("#mk_banner_rbox").find("li").eq(mkBanner.length-1).addClass("select").siblings().removeClass("select");
+					$("#lcount").val(0);
+				}
+			});
+		}, 200);
+	},
+	prev:function(obj){
+		if(obj.timer)clearTimeout(obj.timer);
+		obj.timer = setTimeout(function(){
+			$("#lcount").val(mkBanner.index);
+			mkBanner.index--;
+			$("#mk_banner_rbox").find("li").eq(Math.abs(mkBanner.index)-1).addClass("select").siblings().removeClass("select");
+			$("#bannerlist").stop(true,true).animate({marginLeft:mkBanner.index*1180},600,function(){
+				if(Math.abs(mkBanner.index)>mkBanner.length){
+					$("#bannerlist").css("marginLeft",-1180);
+					mkBanner.index = -1;
+					$("#mk_banner_rbox").find("li").eq(0).addClass("select").siblings().removeClass("select");
+					$("#lcount").val(0);
+				}
+			});
+		},200);
+	}
+};
+
+
+</script>
+
+
+</body>
+</html>
